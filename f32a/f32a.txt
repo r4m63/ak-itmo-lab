@@ -1,0 +1,249 @@
+def sum_even_n(n):
+    """Calculate the sum of even numbers from 1 to n"""
+    if n <= 0:
+        return -1
+    total = 0
+    for i in range(1, n + 1):
+        if i % 2 == 0:
+            total += i
+    return total
+
+
+assert sum_even_n(5) == 6
+assert sum_even_n(10) == 30
+assert sum_even_n(90000) == 2025045000
+
+=================================================
+
+Стек данных
+Стек возврата: Используется для хранения адресов возврата при вызове подпрограмм
+Регистры A и B: Это дополнительные регистры, которые можно использовать для хранения адресов или данных
+
+
+
+
+=================================================
+
+Размер инструкции:
+    1 байт для кода операции
+    4 байта для каждого аргумента
+
+lit <value>     Немедленно помещает значение в стек данных                                          dataStack.push(<value>)
+@p <address>    Поместить значение с определенного адреса в стек данных                             dataStack.push(mem[<address>])
+@               Поместить значение из адреса в регистре A в стек данных                             dataStack.push(mem[A])
+@+              Поместить значение из адреса в регистре A в стек данных и увеличить A               dataStack.push(mem[A]); A <- A + 1
+@b              Поместить значение из адреса в регистре B в стек данных                             dataStack.push(mem[B])
+!p <address>    Сохранение верхнего значения стека данных по определенному адресу                   mem[<address>] <- dataStack.pop()
+!               Сохранение верхнего значения стека данных по адресу в регистре A                    mem[A] <- dataStack.pop()
+!+              Сохранение верхнего значения стека данных по адресу в регистре A и увеличение A     mem[A] <- dataStack.pop(); A <- A + 1
+!b              Сохранение верхнего значения стека данных по адресу в регистре B                    mem[B] <- dataStack.pop()
+a!              Сохранение верхнего значения стека данных в регистре A                              A <- dataStack.pop()
+b!              Сохранение верхнего значения стека данных в регистре B                              B <- dataStack.pop()
+a               Поместить значение регистра A в стек данных                                         dataStack.push(A)
+
++       Сложить два верхних значения в стеке данных
+            no EAM:     dataStack.push(dataStack.pop() + dataStack.pop()), set carry flag
+            EAM:        dataStack.push(dataStack.pop() + dataStack.pop() + carry), set carry flag
++*      Выполнить действие умножения                                T <- T + (if A[0] then S else 0); A <- A >> 1; if T[0] then A[31] <- 1 else A[31] <- 0; T <- T >> 1
++/      Выполнить шаг деления                                       remainder <- remainder << 1; if dividend[31] then remainder[0] <- 1; dividend <- dividend << 1; if remainder >= divisor then remainder <- remainder - divisor; quotient <- quotient << 1; if remainder >= divisor then quotient[0] <- 1
+2*      Сдвиг верхнего значения стека данных влево на один бит      dataStack.push(dataStack.pop() << 1)
+2/      Сдвиг верхнего значения стека данных вправо на один бит     dataStack.push(dataStack.pop() >> 1)
+inv     Инвертировать все биты верхнего значения в стеке данных     dataStack.push(~dataStack.pop())
+eam     Извлечение значения из стека данных и установка флага EAM   eam <- dataStack.pop()
+
+and     Выполнение побитовой операции «И» над двумя верхними значениями стека данных    dataStack.push(dataStack.pop() & dataStack.pop())
+xor     Выполнить побитовую операцию XOR над двумя верхними значениями стека данных     dataStack.push(dataStack.pop() ^ dataStack.pop())
+drop    Удалить верхнее значение из стека данных                                        dataStack.pop()
+dup     Дублирование верхнего значения стека данных                                     dataStack.push(dataStack.top()), carry flag does not change
+over    Поменять местами два верхних значения стека данных                              T <- dataStack.pop(); S <- dataStack.pop(); dataStack.push(T); dataStack.push(S)
+
+;               Возврат из подпрограммы                         p <- returnStack.pop()
+<label>         Вызов подпрограммы по указанной метке           returnStack.push(p); p <- <label>
+<label> ;       Переход к указанной метке                       p <- <label>
+next <label>    Перейти к указанной метке, уменьшая R           if R != 0 then R <- R - 1; p <- <label>
+if <label>      Переход к указанной метке, если верхнее значение стека данных равно нулю        if dataStack.pop() == 0 then p <- <label>
+-if <label>     Переход к указанной метке, если верхнее значение стека данных неотрицательно    if dataStack.pop() >= 0 then p <- <label>
+halt            Остановите машину
+
+r>      Переместить верхнее значение стека возврата в стек данных       dataStack.push(returnStack.pop())
+>r      Переместить верхнее значение стека данных в стек возврата       returnStack.push(dataStack.pop())
+
+
+
+
+
+Переполнение может быть (когда в квадрат возведется) (2^16+1)^2 а это больше чем 2^32
+
+
+.\wrench.exe .\f32a\sum.s --isa f32a -c .\f32a\sum.yaml
+
+https://wrench-edge.edu.swampbuds.me/result/31cd891d-286e-44b0-a66b-a4c069c098b6
+
+
+
+
+===================================================
+.data
+
+input_address: .word 0x80
+output_address: .word 0x84
+overflow_value: .word 0xCCCCCCCC
+
+.text
+
+.org 0x200
+\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ read_address(addr)
+read_address:
+    a!
+    @
+    ;
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ write_address(addr, value)
+write_address:
+    a!
+    !
+    ;
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ (a, b) -> a*b
+\ a - value in A register
+\ b - second value from top of the stack
+mul:
+    lit 0           \ High part of the multiplication result (NOT USED)
+    lit 31
+    >r
+mul_do:
+    +*
+    next mul_do
+    over
+    drop
+    if ok_1
+    
+    @p overflow_value
+    ;
+ok_1:
+    a
+
+    dup
+    -if ok_2
+    
+    drop 
+    @p overflow_value
+    ;
+
+ok_2:
+    ;
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ x*x
+square:
+    dup
+    a!
+    mul
+    ;
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ is_valid(n)
+\ checks if n > 0
+\ returns 0 if yes, -1 otherwise
+is_valid:
+    dup
+    lit -1
+    + 
+    -if true
+false:
+    lit -1
+    ;
+true:
+    lit 0
+    ;
+
+\\\\\\\\\\\\\\\\\\\\\\\\\
+
+\ compare(a, b)
+\ returns 0 if a == b, 1 otherwise 
+\ doesn't duplicate stack values
+compare:
+    inv
+    lit 1
+    +
+    +
+
+    if equal
+not_equal:
+    lit 1 ;
+equal:
+    lit 0 ;
+    
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+_start:
+    @p input_address
+    read_address
+
+    is_valid 
+    if good_value
+bad_value:
+    lit -1
+    end ;
+good_value:
+    2/
+    dup
+    square
+
+    \ if (stack.top() == overflow_value)
+    dup
+    @p overflow_value
+    compare
+
+    if overflow
+
+    +
+    end
+    ;
+overflow:
+    @p overflow_value
+end:
+    @p output_address
+    write_address
+    halt
+
+
+
+
+
+name: assert sum_even_n(5) == 6
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [5]
+  0x84: []
+reports:
+# - name: Debug
+#   slice: all
+#   view: |
+#     {stack:dec}; A: {A:dec}
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [6]
+===================================================
+
+
+
+

@@ -1,0 +1,181 @@
+TASK:
+def capital_case_pstr(s):
+    """
+    Convert the first character of each word in a Pascal string to capital case.
+
+    Capital Case Is Something Like This.
+
+    - Result string should be represented as a correct Pascal string.
+    - Buffer size for the message -- `0x20`, starts from `0x00`.
+    - End of input -- new line.
+    - Initial buffer values -- `_`.
+
+    Python example args:
+        s (str): The input string till new line.
+
+    Returns:
+        tuple: A tuple containing the capitalized output string and input rest.
+    """
+    line, rest = read_line(s, 0x20)
+    if line is None:
+        return [overflow_error_value], rest
+    return line.title(), rest
+
+
+assert capital_case_pstr('hello world\n') == ('Hello World', '')
+# and mem[0..31]: 0b 48 65 6c 6c 6f 20 57 6f 72 6c 64 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f
+assert capital_case_pstr('python programming\n') == ('Python Programming', '')
+# and mem[0..31]: 12 50 79 74 68 6f 6e 20 50 72 6f 67 72 61 6d 6d 69 6e 67 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f
+
+
+
+
+USAGE:
+$ wrench --help
+Usage: wrench INPUT [--isa ISA] [-c|--conf CONF] [-S] [-v|--verbose]
+
+  App for laboratory course of computer architecture.
+
+Available options:
+  INPUT                    Input assembler file (.s)
+  --isa ISA                ISA (risc-iv-32, f32a, acc32) (default: "risc-iv-32")
+  -c,--conf CONF           Configuration file (.yaml)
+  -S                       Only run preprocess and translation steps
+  -v,--verbose             Verbose output
+  -h,--help                Show this help text
+  --version                Show version information
+
+.\wrench.exe .\acc32\capital_case_pstr.s --isa acc32 -c .\acc32\capital_case_pstr.yaml
+
+
+
+
+
+
+
+
+COMMANDS:
+- load_imm <addr>      Загрузка немедленного значения в аккумулятор.                                acc <- <addr>
+
+- load <offset>        Загрузка значения из относительного адреса в аккумулятор.                    acc <- mem[pc + <offset>]
+- store <offset>       Сохранение значения аккумулятора по относительному адресу.                   mem[pc + <offset>] <- acc
+
+- load_addr <addr>     Загрузка значения с адреса в аккумулятор.                                    acc <- mem[<addr>]
+- store_addr <addr>    Сохранение значения аккумулятора по определенному адресу.                    mem[<addr>] <- acc
+
+- load_ind <addr>      Загрузка значения из косвенного адреса в аккумулятор.                        acc <- mem[mem[<addr>]]
+- store_ind <addr>     Сохранение значения аккумулятора в косвенном адресе.                         mem[mem[<addr>]] <- acc
+
+
+- add <addr>          Добавить значение с определенного адреса в аккумулятор.                       acc <- acc + mem[<addr>] и набор C и Vфлаги.
+- sub <addr>          Вычитает значение из указанного адреса из аккумулятора.                       acc <- acc - mem[<addr>] и установка Vфлагов.
+- mul <addr>          Умножить аккумулятор на значение из определенного адреса.                     acc <- acc * mem[<addr>] и установка Vфлагов.
+- div <addr>          Деление аккумулятора на значение с определенного адреса.                      acc <- acc / mem[<addr>]
+- rem <addr>          Вычислить остаток аккумулятора, деленный на значение из адреса                acc <- acc % mem[<addr>]
+- clv                 Очистить флаг переполнения                                                    overflow <- 0
+
+
+- shiftl <addr>       Сдвиг аккумулятора влево на количество бит от указанного адреса.              acc <- acc << mem[<addr>]
+- shiftr <addr>       Сдвиг аккумулятора вправо на количество бит от указанного адреса.             acc <- acc >> mem[<addr>]
+- and <addr>          Выполнить побитовую операцию И над аккумулятором со значением из адреса.      acc <- acc & mem[<addr>]
+- or <addr>           Выполнить побитовую операцию ИЛИ над аккумулятором со значением из адреса.    acc <- acc | mem[<addr>]
+- xor <addr>          Выполнить побитовую операцию XOR над аккумулятором со значением из адреса.    acc <- acc ^ mem[<addr>]
+- not                 Выполнить побитовую операцию НЕ над аккумулятором.                            acc <- ~acc
+
+
+- jmp <addr>          Переход к определенному адресу.                                               pc <- <addr>
+- beqz <addr>         Переход к определенному адресу, если аккумулятор равен нулю.                  if acc == 0 then pc <- <addr>
+- bnez <addr>         Переход к определенному адресу, если аккумулятор не равен нулю.               if acc != 0 then pc <- <addr>
+- bgt <addr>          Переход к определенному адресу, если аккумулятор больше нуля.                 if acc > 0 then pc <- <addr>
+- ble <addr>          Переход к определенному адресу, если аккумулятор меньше нуля.                 if acc < 0 then pc <- <addr>
+- bvs <addr>          Переход к определенному адресу, если установлен флаг переполнения.            if overflow == 1 then pc <- <addr>
+- bvc <addr>          Переход к определенному адресу, если флаг переполнения сброшен.               if overflow == 0 then pc <- <addr>
+- bcs <addr>          Переход к определенному адресу, если установлен флаг переноса.                if carry == 1 then pc <- <addr>
+- bcc <addr>          Переход к определенному адресу, если флаг переноса снят.                      if carry == 0 then pc <- <addr>
+
+- halt                Завершение
+
+.data
+
+.text
+
+Размер инструкций:
+    1 байт для кода операции
+    4 байта для абсолютного операнда
+    2 байта для относительного операнда
+
+
+Carry выставляется, если происходит перенос или заем при выполнении арифметической операции. Это может происходить в следующих случаях:
+    Для беззнаковых чисел (unsigned):
+    Сложение: Если результат сложения двух чисел превышает максимальное значение, которое можно представить в заданном количестве бит.
+    0xFF (255) + 0x01 (1) = 0x100 (256)
+    Вычитание: Если результат вычитания меньше нуля (происходит заем).
+    0x00 (0) - 0x01 (1) = 0xFF (255)
+
+Overflow выставляется, если результат арифметической операции не может быть корректно представлен в заданном количестве бит для знаковых чисел (signed).
+    Для знаковых чисел (signed):
+    Сложение: Если результат сложения двух положительных чисел дает отрицательное число, или если сложение двух отрицательных чисел дает положительное число.
+    0x7F (127) + 0x01 (1) = 0x80 (-128)
+    Вычитание: Если результат вычитания выходит за пределы диапазона.
+    0x80 (-128) - 0x01 (1) = 0x7F (127)
+    Overflow:
+    	+ - *
+    	/ не выставляет
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
