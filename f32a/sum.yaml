@@ -1,14 +1,10 @@
-name: assert sum_even_n(5) == 6
+name: sum_even_n
 limit: 2000
 memory_size: 0x1000
 input_streams:
   0x80: [10]
   0x84: []
 reports:
-# - name: Debug
-#   slice: all
-#   view: |
-#     {stack:dec}; A: {A:dec}
   - name: Check results
     slice: last
     filter:
