@@ -1,0 +1,21 @@
+limit: 1000
+memory_size: 1000
+input_streams:
+  0x80: [ 11 ]
+  0x84: [ ]
+reports:
+  - name: step-by-step
+    slice: [ "tail", 50 ]
+    view: |
+      D0:{D0}   D1:{D1}    D2:{D2}
+      A0:{A0}   A1:{A1}
+      NZVC: {SR:bin}
+      {pc}:	{instruction}	{pc:label}
+  - name: result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [1]
