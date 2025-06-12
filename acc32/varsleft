@@ -4,5 +4,4 @@ get_put_char
 hello
 is_binary_palindrome
 logical_not
-sum_word_pstream
 upper_case_cstr
