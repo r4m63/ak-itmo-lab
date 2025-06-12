@@ -1,7 +1,2 @@
-dup
-factorial
-get_put_char
-hello
 is_prime
-logical_not
 reverse_bits
