@@ -1,0 +1,21 @@
+limit: 1500
+memory_size: 0x1000           
+ 
+input_streams:
+  0x80: ["hello\n"]
+  0x84: []
+ 
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}: {instruction} {pc:label}
+      Acc {Acc:hex}
+ 
+  - name: Result
+    slice: last
+    view: |
+      in-hex:  {io:0x80:hex}
+      out-hex: {io:0x84:hex}
+      out-sym: {io:0x84:sym}
+      {memory:0x00:0x1f}

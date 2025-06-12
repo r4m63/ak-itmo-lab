@@ -1,0 +1,23 @@
+limit: 1000
+memory_size: 0x1000
+ 
+input_streams:
+  0x80: [16] 
+  0x84: []   
+ 
+reports:
+  - name: Step-by-step execution
+    slice: all
+    view: |
+      {pc}: {instruction} {pc:label}
+      Acc: {Acc:dec} | Count: {mem[count]:dec} | N: {mem[n]:hex}
+      Flags: V={V} C={C}
+ 
+  - name: Final result check
+    slice: last
+    view: |
+      Input (0x80): {io:0x80:dec} (0x{io:0x80:hex})
+      Output (0x84): {io:0x84:dec} (0x{io:0x84:hex})
+    assert: |
+      io:0x80: [] >>> []
+      io:0x84: [] >>> [27]

@@ -1,0 +1,22 @@
+name: assert is_prime(5) == 1
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [777]
+  0x84: []
+reports:
+  - name: all 
+    slice: [head, 10]
+    view: | 
+ 
+      {pc:dec}  {pc:label} | {instruction} | {Acc:dec}
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [21]
