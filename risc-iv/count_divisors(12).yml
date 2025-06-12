@@ -1,0 +1,29 @@
+limit: 200
+memory_size: 0x1000
+input_streams:
+  0x80: [ -12 ]
+  0x84: [ ]
+reports:
+  - name: step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction}	{pc:label}
+      T0:{T0:hex} 
+      T1:{T1:hex}
+      T2:{T2:hex} 
+      T3:{T3:hex} 
+      T4:{T4:hex}
+      T5:{T5:hex}
+      -----------------------
+      A0:{A0:hex}
+      SP:{Sp:hex}
+      RA:{Ra:hex}
+      =======================
+  - name: result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [-1]

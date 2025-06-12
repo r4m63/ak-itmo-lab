@@ -1,0 +1,22 @@
+name: count_divisors
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [10]
+  0x84: []
+reports:
+  - name: instructions
+    # slice: all
+    slice: ["tail", 20]
+    view: |
+      D0 {D0:dec}, D1 {D1:dec}, D2 {D2:dec}, D3 {D3:dec}, D4 {D4:dec}
+      {SR:bin}
+      {pc}:	{instruction}	{pc:label} 
+  - name: Result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [4]

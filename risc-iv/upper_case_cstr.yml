@@ -1,0 +1,23 @@
+name: "assert hello(*()) == ('Hello\n\0World',)"
+limit: 1000
+memory_size: 0x1000
+input_streams:
+  0x80: ["Alice\n"]
+  0x84: []
+reports:
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      symio[0x80]: {io:0x80:sym}
+      symio[0x84]: {io:0x84:sym}
+      {memory:0:31}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [65,76,73,67,69]
+      symio[0x80]: "" >>> ""
+      symio[0x84]: "" >>> "ALICE"
+      mem[0..31]: 	41 4c 49 43 45 00 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f 5f

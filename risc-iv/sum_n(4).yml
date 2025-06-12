@@ -1,0 +1,21 @@
+name: "risc-iv sum_n"
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [68000]
+  0x84: []
+reports:
+  - name: step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction} {pc:label}; a0 = {A0:hex}; a1 = {A1:hex}; a2 = {A2:hex}, t0 = {T0:hex}, t1 = {T1:hex}, t2 = {T2:hex}
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [-858993460]

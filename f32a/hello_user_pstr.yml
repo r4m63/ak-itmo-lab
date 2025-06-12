@@ -1,0 +1,16 @@
+limit: 2000
+memory_size: 0x2000
+input_streams:
+  0x80: ["Alice\n"]
+  0x84: []
+reports:
+  - name: Result
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:sym}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: "" >>> "What is your name?\nHello, Alice!"

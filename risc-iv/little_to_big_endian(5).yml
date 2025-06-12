@@ -1,0 +1,14 @@
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [305419896]
+  0x84: []
+reports:
+  - name: result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80}
+      numio[0x84]: {io:0x84}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [2018915346]
