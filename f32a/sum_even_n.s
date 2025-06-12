@@ -1,10 +1,10 @@
-.data
+    .data
 
 input_address: .word 0x80
 output_address: .word 0x84
 overflow_value: .word 0xCCCCCCCC
 
-.text
+    .text
 
 read_address:
     a!
@@ -20,6 +20,7 @@ mul:
     lit 0
     lit 31
     >r
+
 mul_loop:
     +*
     next mul_loop
@@ -28,6 +29,7 @@ mul_loop:
     if mul_no_overflow
     @p overflow_value
     ;
+
 mul_no_overflow:
     a
     dup
@@ -35,6 +37,7 @@ mul_no_overflow:
     drop 
     @p overflow_value
     ;
+
 mul_no_negative:
     ;
 
@@ -49,9 +52,11 @@ is_valid:
     lit -1
     + 
     -if true
+
 false:
     lit -1
     ;
+
 true:
     lit 0
     ;
@@ -62,8 +67,10 @@ compare:
     +
     +
     if equal
+
 not_equal:
     lit 1 ;
+
 equal:
     lit 0 ;
 
@@ -72,9 +79,11 @@ _start:
     read_address
     is_valid 
     if good_value
+
 bad_value:
     lit -1
     end ;
+
 good_value:
     2/
     dup
@@ -86,8 +95,10 @@ good_value:
     +
     end
     ;
+
 overflow:
     @p overflow_value
+
 end:
     @p output_address
     write_address

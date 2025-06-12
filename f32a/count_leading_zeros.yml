@@ -1,0 +1,24 @@
+name: assert count_leading_zeros(1) == 31
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [ 15803205 ]
+  0x84: [ ]
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {stack:hex}
+      T A B S {T:hex} {A:hex} {B:hex} {S:hex} R {R} C {C} EAM {EAM}
+      {pc}:	{instruction}	{pc:label}
+
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [8]

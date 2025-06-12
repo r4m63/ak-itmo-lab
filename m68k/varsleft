@@ -1,0 +1,24 @@
+big_to_little_endian
+capital_case_cstr
+capital_case_pstr
+count_divisors
+count_leading_zeros
+count_trailing_zeros
+count_zero
+dup
+factorial
+gcd
+get_put_char
+hello
+hello_user_pstr
+is_binary_palindrome
+little_to_big_endian
+logical_not
+reverse_string_cstr
+reverse_string_pstr
+sum_even_n
+sum_n sum_odd_n
+sum_of_digits
+sum_word_cstream
+sum_word_pstream
+upper_case_pstr

@@ -1,0 +1,24 @@
+name: assert fibonacci(47) == -858993460
+limit: 100000
+memory_size: 0x1000
+input_streams:
+  0x80: [ 47 ]
+  0x84: [ ]
+reports:
+  - name: Step-by-step
+    slice: [ "tail", 100 ]
+    view: |
+      {stack:hex}
+      T A B S {T:hex} {A:hex} {B:hex} {S:hex} R {R}
+      {pc}:	{instruction}	{pc:label}
+
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [-858993460]

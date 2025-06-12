@@ -1,0 +1,19 @@
+limit: 200
+memory_size: 0x900
+input_streams:
+  0x80: [ 0xddccbbaa ]
+  0x84: [ ]
+reports:
+  - name: step-by-step
+    slice: all
+    view: |
+      {A0:hex} {A1:hex} {A2:hex} {A3:hex} {T1:hex} {T0:hex}
+      {pc}:	{instruction}	{pc:label}
+  - name: result
+    slice: last
+    view: |
+      numio[0x80]: {io:0x80:hex}
+      numio[0x84]: {io:0x84:hex}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [0xaabbccdd]

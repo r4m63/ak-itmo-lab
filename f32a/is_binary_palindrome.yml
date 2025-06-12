@@ -1,0 +1,20 @@
+limit: 2000
+memory_size: 0x1000
+input_streams:
+  0x80: [ 5 ]
+  0x84: [ ]
+reports:
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+
+      top:{memory:144:147}
+      bot:{memory:148:151}
+      numio[0x80]: {io:0x80:hex}
+      numio[0x84]: {io:0x84:hex}
+      A:{A:hex}
+      T:{T:hex}
+      S:{S:hex}
+      ----
