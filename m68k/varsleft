@@ -1,5 +1,4 @@
 big_to_little_endian
-capital_case_cstr
 capital_case_pstr
 count_leading_zeros
 count_trailing_zeros
