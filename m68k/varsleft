@@ -12,7 +12,6 @@ reverse_string_pstr
 sum_even_n
 sum_n
 sum_odd_n
-sum_of_digits
 sum_word_cstream
 sum_word_pstream
 upper_case_pstr
