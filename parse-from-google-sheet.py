@@ -10,7 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 # DOC_URL = 'https://docs.google.com/spreadsheets/d/1o_M4lopQEifmjpyhoAHB6847drNaoVMjTzL5p46ukW4/edit?gid=1803345319#gid=1803345319'
 # DOC_URL = 'https://docs.google.com/spreadsheets/d/1_xXmr2hWpU0u46ipXLh9Rnkkbki1hN_-MnvjoxsJhNw/edit?gid=0#gid=0'
 # DOC_URL = 'https://docs.google.com/spreadsheets/d/18Jm-BDRsWVJvpHDglQzUajEh1rHQxoNqSOnYFjDrelY/edit?gid=372578189#gid=372578189'
-DOC_URL = 'https://docs.google.com/spreadsheets/d/1x2soN01W0vEXRtaFDFi2-B7pEuVVuP_5MiahSmVlQFc/edit?pli=1&gid=1651427486#gid=1651427486'
+# DOC_URL = 'https://docs.google.com/spreadsheets/d/1x2soN01W0vEXRtaFDFi2-B7pEuVVuP_5MiahSmVlQFc/edit?pli=1&gid=1651427486#gid=1651427486'
 
 # CELL_RANGE = 'E2:E91'
 # CELL_RANGE = 'D2:D134'
@@ -19,7 +19,7 @@ DOC_URL = 'https://docs.google.com/spreadsheets/d/1x2soN01W0vEXRtaFDFi2-B7pEuVVu
 # CELL_RANGE = 'E2:E89'
 # CELL_RANGE = 'D2:D134'
 # CELL_RANGE = 'C2:C81'
-CELL_RANGE = 'C2:C71'
+# CELL_RANGE = 'C2:C71'
 
 PREFIX = 'https://wrench.edu.swampbuds.me/result'
 
