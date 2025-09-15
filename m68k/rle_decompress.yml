@@ -1,0 +1,26 @@
+# /app/variants/rle_decompress/1.yaml
+name: assert rle_decompress('3A4B4C\n') == ('AAABBBBCCCC', '')
+limit: 2000
+memory_size: 0x2000
+memory_mapped_io:
+  0x80: [51, 65, 52, 66, 52, 67, 10]
+  0x84: []
+reports:
+  #  - name: sbs
+  #    slice: all
+  #    view: |
+  #      pc:{pc:hex} D3:{D3:hex} D4:{D4:hex} A6:{A6:hex} A7:{A7:hex} {pc:label}
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      symio[0x80]: {io:0x80:sym}
+      symio[0x84]: {io:0x84:sym}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [65,65,65,66,66,66,66,67,67,67,67]
+      symio[0x80]: "" >>> ""
+      symio[0x84]: "" >>> "AAABBBBCCCC"
