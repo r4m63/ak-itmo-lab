@@ -2,4 +2,6 @@ wrench-fmt.exe
 wrench-serv.exe
 wrench.exe
 
+*.py
+
 .idea
